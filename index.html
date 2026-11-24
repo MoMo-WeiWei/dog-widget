@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>黃金獵犬領養適配度小測驗</title>
+  <style>
+    :root {
+      --bg-cream: #FFFDF7;
+      --card-bg: #FFF9EB;
+      --card-hover: #FFF2D6;
+      --accent-gold: #E6A832;
+      --accent-gold-dark: #C88A1E;
+      --guide-bg: #FEF3DC;
+      --guide-border: #F2C97D;
+      --text-main: #3D3122;
+      --text-sub: #7A6852;
+      --border-soft: #F0E2C4;
+      --tag-family-bg: #EBF5EC;
+      --tag-family-text: #2F6F3E;
+      --tag-help-bg: #FFF0E0;
+      --tag-help-text: #9C5214;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: transparent;
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 12px;
+    }
+
+    .quiz-box {
+      max-width: 540px;
+      margin: 0 auto;
+      background: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      padding: 24px 22px;
+      box-shadow: 0 6px 24px rgba(180, 135, 50, 0.06);
+    }
+
+    .quiz-header {
+      margin-bottom: 18px;
+    }
+
+    .quiz-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-gold-dark);
+      background: var(--card-bg);
+      border: 1px solid var(--border-soft);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .quiz-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: #F3E8D0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 20%;
+      background: var(--accent-gold);
+      border-radius: 999px;
+      transition: width 0.28s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--text-sub);
+      white-space: nowrap;
+    }
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 14px;
+    }
+
+    .question-hint {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--card-bg);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 13px 15px;
+      font-size: 14.5px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+      line-height: 1.5;
+    }
+
+    .option-btn:hover {
+      background: var(--card-hover);
+      border-color: var(--guide-border);
+      transform: translateY(-1px);
+    }
+
+    .option-btn:active {
+      transform: translateY(0);
+    }
+
+    .quiz-footer {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 28px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+
+    .back-btn:hover {
+      color: var(--text-main);
+      background: var(--card-bg);
+    }
+
+    /* 結果畫面 */
+    .result-box {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .result-box.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-tag {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .result-tag.family {
+      background: var(--tag-family-bg);
+      color: var(--tag-family-text);
+    }
+
+    .result-tag.help {
+      background: var(--tag-help-bg);
+      color: var(--tag-help-text);
+    }
+
+    .result-headline {
+      font-size: 17.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+
+    .result-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+    }
+
+    /* 最底部指引箭頭框框 */
+    .guide-arrow-box {
+      background: var(--guide-bg);
+      border: 1.5px solid var(--guide-border);
+      border-radius: 14px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text-main);
+      font-size: 14.5px;
+      font-weight: 600;
+    }
+
+    .guide-arrow-icon {
+      font-size: 18px;
+      color: var(--accent-gold-dark);
+      flex-shrink: 0;
+    }
+
+    .retry-wrap {
+      margin-top: 14px;
+      text-align: right;
+    }
+
+    .retry-btn {
+      background: none;
+      border: 1px solid var(--border-soft);
+      color: var(--text-sub);
+      font-size: 12.5px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .retry-btn:hover {
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <!-- 作答區 -->
+    <div id="questionView">
+      <div class="quiz-header">
+        <span class="quiz-badge">黃金獵犬適配度測驗</span>
+        <h2 class="quiz-title">你準備好迎接大暖男了嗎？</h2>
+        <div class="quiz-progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span class="progress-text" id="progressText">第 1 / 5 題</span>
+        </div>
+      </div>
+
+      <p class="question-hint" id="questionHint"></p>
+      <h3 class="question-text" id="questionText"></h3>
+      <div class="options-list" id="optionsList"></div>
+
+      <div class="quiz-footer">
+        <button class="back-btn" id="backBtn" type="button" onclick="prevQuestion()">← 上一題</button>
+      </div>
+    </div>
+
+    <!-- 結果區 -->
+    <div id="resultView" class="result-box">
+      <span class="result-tag" id="resultTag"></span>
+      <h3 class="result-headline" id="resultHeadline"></h3>
+      <p class="result-desc" id="resultDesc"></p>
+
+      <div class="guide-arrow-box">
+        <span id="guideLabel"></span>
+        <span class="guide-arrow-icon" aria-hidden="true">➔</span>
+      </div>
+
+      <div class="retry-wrap">
+        <button class="retry-btn" type="button" onclick="restartQuiz()">重新測驗一次</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        hint: "居住空間與動線",
+        question: "黃金獵犬成犬體重約 25～35 公斤，老年也容易有關節退化問題。你的居住環境是？",
+        options: [
+          { label: "有電梯、一樓或透天，室內有足夠活動與轉身空間", score: 3 },
+          { label: "空間偏小或租屋，但已確認可養大型犬，且願意每天帶出門放電", score: 2 },
+          { label: "無電梯高樓層，或目前租屋／家人尚未同意養大型犬", score: 1 }
+        ]
+      },
+      {
+        hint: "掉毛與居家清潔",
+        question: "黃金獵犬一年掉兩次毛、一次掉半年。當衣服、沙發甚至飯碗裡出現金色毛髮時，你的反應是？",
+        options: [
+          { label: "沒問題，已做好勤勞吸地、梳毛與清潔的心理準備", score: 3 },
+          { label: "有點崩潰，但為了牠的笑容，願意調整打掃習慣或定期美容", score: 2 },
+          { label: "對毛髮比較敏感、有潔癖，或家裡有人對狗毛過敏", score: 1 }
+        ]
+      },
+      {
+        hint: "每日陪伴與運動量",
+        question: "黃金獵犬非常黏人、需要高度互動與運動。你每天大概能抽出多少時間專心陪牠？",
+        options: [
+          { label: "每天至少 1 小時以上，下班後大部分時間都在家陪牠", score: 3 },
+          { label: "平日約 30～40 分鐘，假日會安排散步或去公園放電", score: 2 },
+          { label: "工作常加班出差，或週末常外出，比較難固定陪伴", score: 1 }
+        ]
+      },
+      {
+        hint: "經濟與醫療預算",
+        question: "大型犬的飼料、預防藥（依體重計算）以及老犬醫療費通常比小型犬高。你的預算規劃是？",
+        options: [
+          { label: "有穩定的每月飼養預算，也準備了一筆緊急醫療預備金", score: 3 },
+          { label: "平日開銷沒問題，若遇到較大筆醫療費會再調整生活花費", score: 2 },
+          { label: "目前預算還比較緊，突然多出幾千元的固定開銷會有點吃力", score: 1 }
+        ]
+      },
+      {
+        hint: "未來 10 年的承諾",
+        question: "陪伴一隻狗狗可能是未來 8～12 年的事。如果遇到搬家、換工作或人生階段變化，你會怎麼想？",
+        options: [
+          { label: "牠是家人，我會提前規劃好帶牠一起面對生活變化", score: 3 },
+          { label: "會盡力留住牠，但可能需要家人或伴侶一起分擔照顧", score: 2 },
+          { label: "未來變數還很多，現在比較難給出長期的承諾", score: 1 }
+        ]
+      }
+    ];
+
+    let currentIndex = 0;
+    const answers = new Array(questions.length).fill(null);
+
+    const questionView = document.getElementById("questionView");
+    const resultView = document.getElementById("resultView");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const questionHint = document.getElementById("questionHint");
+    const questionText = document.getElementById("questionText");
+    const optionsList = document.getElementById("optionsList");
+    const backBtn = document.getElementById("backBtn");
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      const pct = ((currentIndex + 1) / questions.length) * 100;
+
+      progressFill.style.width = `${pct}%`;
+      progressText.textContent = `第 ${currentIndex + 1} / ${questions.length} 題`;
+      questionHint.textContent = q.hint;
+      questionText.textContent = q.question;
+      backBtn.style.visibility = currentIndex === 0 ? "hidden" : "visible";
+
+      optionsList.innerHTML = "";
+      q.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.textContent = opt.label;
+        btn.onclick = () => selectOption(opt.score);
+        optionsList.appendChild(btn);
+      });
+    }
+
+    function selectOption(score) {
+      answers[currentIndex] = score;
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      const totalScore = answers.reduce((sum, val) => sum + (val || 0), 0);
+      const isFamily = totalScore >= 11;
+
+      questionView.style.display = "none";
+      resultView.classList.add("active");
+
+      const tagEl = document.getElementById("resultTag");
+      const headlineEl = document.getElementById("resultHeadline");
+      const descEl = document.getElementById("resultDesc");
+      const guideEl = document.getElementById("guideLabel");
+
+      if (isFamily) {
+        tagEl.textContent = "尋找家人";
+        tagEl.className = "result-tag family";
+        headlineEl.textContent = "你的生活節奏與準備度都很不錯，或許可以開始看看，哪隻黃金獵犬正在等你帶牠回家。";
+        descEl.textContent = totalScore >= 13
+          ? "無論空間、時間、預算還是心態都相當到位，只要找到有緣的毛孩，就能給牠一個安穩的家。"
+          : "你已經具備不少照顧黃金獵犬的條件了，可以先去看看有哪些狗狗與相關資訊，慢慢評估是否合適。";
+        guideEl.textContent = "歡迎到「尋找家人」";
+      } else {
+        tagEl.textContent = "我想幫忙";
+        tagEl.className = "result-tag help";
+        headlineEl.textContent = "可能或許你現在還不適合飼養，但你可以採取這些行動幫助牠們。";
+        descEl.textContent = "不把狗狗帶回家，不代表不能愛牠們。無論是分享資訊、支持第一線單位或了解議題，都是很棒的參與方式。";
+        guideEl.textContent = "歡迎到「我想幫忙」";
+      }
+    }
+
+    function restartQuiz() {
+      currentIndex = 0;
+      answers.fill(null);
+      resultView.classList.remove("active");
+      questionView.style.display = "block";
+      renderQuestion();
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
