@@ -397,7 +397,6 @@
 
     function showResult() {
       const totalScore = answers.reduce((sum, val) => sum + (val || 0), 0);
-      const isFamily = totalScore >= 11;
 
       questionView.style.display = "none";
       resultView.classList.add("active");
@@ -407,14 +406,24 @@
       const descEl = document.getElementById("resultDesc");
       const guideEl = document.getElementById("guideLabel");
 
-      if (isFamily) {
+      if (totalScore >= 13) {
         tagEl.textContent = "尋找家人";
         tagEl.className = "result-tag family";
         headlineEl.textContent = "你的生活節奏與準備度都很不錯，或許可以開始看看，哪隻黃金獵犬正在等你帶牠回家。";
-        descEl.textContent = totalScore >= 13
-          ? "無論空間、時間、預算還是心態都相當到位，只要找到有緣的毛孩，就能給牠一個安穩的家。"
-          : "你已經具備不少照顧黃金獵犬的條件了，可以先去看看有哪些狗狗與相關資訊，慢慢評估是否合適。";
+        descEl.textContent = "黃金獵犬需要陪伴、空間與穩定的照顧承諾，只要你準備好迎接這份責任，牠們會用一生的溫柔回報你。";
         guideEl.textContent = "歡迎到「尋找家人」";
+      } else if (totalScore >= 11) {
+        tagEl.textContent = "尋找家人";
+        tagEl.className = "result-tag family";
+        headlineEl.textContent = "你已經具備不少照顧黃金獵犬的條件了，可以先去看看有哪些狗狗與相關資訊，慢慢評估是否合適。";
+        descEl.textContent = "領養前多了解、多比較總是好的，先從認識牠們的處境與需求開始吧！";
+        guideEl.textContent = "歡迎到「尋找家人」";
+      } else if (totalScore >= 9) {
+        tagEl.textContent = "我想幫忙";
+        tagEl.className = "result-tag help";
+        headlineEl.textContent = "現階段或許還有一些現實條件需要考量，先不急著帶回家，你可以從這些行動開始陪牠們。";
+        descEl.textContent = "等未來時間、空間與預算都更成熟時，再來談領養；現在先用其他方式給牠們力量吧！";
+        guideEl.textContent = "歡迎到「我想幫忙」";
       } else {
         tagEl.textContent = "我想幫忙";
         tagEl.className = "result-tag help";
